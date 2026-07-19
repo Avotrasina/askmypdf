@@ -87,7 +87,7 @@
 						stroke-linejoin="round"
 					>
 						<circle cx="11" cy="11" r="7" />
-						<path d="m21 21-4.3-4.3" />
+						<path d="m21 21-4.3-4.3" />p
 					</svg>
 				</button>
 
@@ -95,7 +95,8 @@
 					id="btn-upload-open"
 					type="button"
 					class="inline-flex items-center gap-1.5 bg-primary hover:bg-primary-dark text-white text-sm font-medium px-3 md:px-4 py-2.5 rounded-lg transition active:scale-[.98]"
-				>
+					@click="$emit('toogle-modal', true)"
+					>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						class="w-4 h-4"
@@ -158,5 +159,6 @@
 </template>
 
 <script setup>
-  import UserMenu from '@/components/UserMenu.vue';
+
+
 </script>
