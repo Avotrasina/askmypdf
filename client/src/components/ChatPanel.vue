@@ -1,9 +1,9 @@
 <template>
-  <section id="panel-chat" class="mobile-panel hidden md:flex w-full md:w-[380px] xl:w-[400px] shrink-0 border-l border-border bg-surface flex-col">
+  <section id="panel-chat" class="mobile-panel hidden md:flex w-full md:w-95 xl:w-100 shrink-0 border-l border-border bg-surface flex-col">
 
-    <div class="shrink-0 px-5 h-14 flex flex-col justify-center border-b border-border">
+    <div v-if="props.file" class="shrink-0 px-5 h-14 flex flex-col justify-center border-b border-border">
       <p class="text-sm font-semibold text-ink">Ask about this document</p>
-      <p class="text-xs text-ink-faint truncate">Q3-Financial-Report.pdf</p>
+      <p class="text-xs text-ink-faint truncate"> {{ props.file?.name }} </p>
     </div>
 
     <!-- Message thread -->
@@ -71,5 +71,10 @@
 </template>
 
 <script setup>
+
+const props = defineProps({
+  file: Object
+})
+
 
 </script>
