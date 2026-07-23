@@ -33,10 +33,12 @@
 			</div>
 
 			<label
+			@dragover.prevent
+			@drop.prevent="handleDrop"
 				id="dropzone"
 				class="flex flex-col items-center justify-center text-center gap-2 border-2 border-dashed border-border hover:border-primary/50 rounded-xl px-6 py-10 cursor-pointer transition"
 			>
-				<input type="file" accept="application/pdf" class="hidden" />
+				<input @change="handleFileSelect" type="file" accept="application/pdf" class="hidden" />
 				<span
 					class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-primary-soft text-primary mb-1"
 				>
@@ -72,6 +74,46 @@
 
 
 <script setup>
+import { ref } from 'vue';
+
+
+const file = ref(null);
+const emit = defineEmits(['toogle-modal', 'upload-file']);
+
+function handleFileSelect(e) {
+	const selectedFile = e.target.files[0];
+	if (!selectedFile) return;
+	
+	file.value = selectedFile;
+	// Validation
+	processFile(file);
+}
+
+function handleDrop(e) {
+	const droppedFile = e.dataTransfer.files[0];
+	if (!droppedFile) return;
+	
+	file.value = droppedFile;
+	// Validation
+	processFile(file)
+}
+
+
+function processFile(file) {
+	if (file.value.type !== "application/pdf") {
+		alert("Only PDF is required");
+		return;
+	}
+
+	if (file.value.size > 10 * 1024 * 1024) {
+		alert("Maximum size is 10 MB");
+		return;
+	}
+
+	// Emit upload file
+	emit('upload-file', file);
+}
+
 
 
 </script>
