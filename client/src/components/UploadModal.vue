@@ -110,7 +110,8 @@ function processFile(file) {
 		return;
 	}
 
-	// Emit upload file
+	// Close the modal and emit the file
+	emit('toogle-modal', false);
 	emit('upload-file', file);
 }
 
