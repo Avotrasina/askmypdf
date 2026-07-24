@@ -15,76 +15,61 @@
 		<div
 			class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden px-4 py-5 space-y-4"
 		>
-			<div class="flex justify-end fade-up">
-				<div
-					class="max-w-[85%] bg-primary text-white text-sm leading-relaxed rounded-2xl rounded-tr-sm px-4 py-2.5"
-				>
-					What was the total revenue in Q3?
-				</div>
-			</div>
-
-			<div class="flex justify-start fade-up">
-				<div class="max-w-[88%] space-y-2">
+			<div v-for="(message, index) in messageList" :key="index">
+				<div v-if="message.role === 'user'" class="flex justify-end fade-up">
 					<div
-						class="bg-paper text-ink text-sm leading-relaxed rounded-2xl rounded-tl-sm px-4 py-3 border border-border"
+						class="max-w-[85%] bg-primary text-white text-sm leading-relaxed rounded-2xl rounded-tr-sm px-4 py-2.5"
 					>
-						Total revenue in Q3 reached
-						<span class="font-semibold">$4.2M</span>, an increase of
-						<span class="font-semibold">18% year-over-year</span>, mainly driven
-						by growth in the enterprise segment
-						<button
-							class="citation-pin inline-flex items-center justify-center w-4 h-4 align-middle rounded-full bg-highlight text-white text-[10px] font-mono font-semibold ml-0.5 hover:bg-highlight-dark transition"
-						>
-							1</button
-						>.
-					</div>
-					<div class="flex items-center gap-2 px-1">
-						<span class="text-[11px] font-mono text-ink-faint"
-							>Source: page 4</span
-						>
-						<span class="text-ink-faint">&middot;</span>
-						<button
-							class="text-[11px] text-ink-faint hover:text-primary transition"
-						>
-							Copy
-						</button>
-						<button
-							class="text-[11px] text-ink-faint hover:text-primary transition"
-						>
-							Good answer
-						</button>
+						{{ message.content }}
 					</div>
 				</div>
-			</div>
-
-			<div class="flex justify-end fade-up">
-				<div
-					class="max-w-[85%] bg-primary text-white text-sm leading-relaxed rounded-2xl rounded-tr-sm px-4 py-2.5"
-				>
-					Can you summarize the key risks section too?
+				<div v-else class="flex justify-start fade-up">
+					<div class="max-w-[88%] space-y-2">
+						<div
+							class="bg-paper text-ink text-sm leading-relaxed rounded-2xl rounded-tl-sm px-4 py-3 border border-border"
+						>
+							{{ message.content }}
+						</div>
+						<div class="flex items-center gap-2 px-1">
+							<span class="text-[11px] font-mono text-ink-faint"
+								>Source: page 4</span
+							>
+							<span class="text-ink-faint">&middot;</span>
+							<button
+								class="text-[11px] text-ink-faint hover:text-primary transition"
+							>
+								Copy
+							</button>
+							<button
+								class="text-[11px] text-ink-faint hover:text-primary transition"
+							>
+								Good answer
+							</button>
+						</div>
+					</div>
 				</div>
-			</div>
 
-			<!-- Typing indicator -->
-			<div class="flex justify-start">
-				<div
-					class="bg-paper border border-border rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5"
-				>
-					<span
-						class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.2s]"
-					></span>
-					<span
-						class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.1s]"
-					></span>
-					<span
-						class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce"
-					></span>
+				<!-- Typing indicator -->
+				<div v-if="isLoading" class="flex justify-start">
+					<div
+						class="bg-paper border border-border rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5"
+					>
+						<span
+							class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.2s]"
+						></span>
+						<span
+							class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.1s]"
+						></span>
+						<span
+							class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce"
+						></span>
+					</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- Suggested questions -->
-		<div class="shrink-0 px-4 pb-2 flex flex-wrap gap-1.5">
+		<div class="hidden shrink-0 px-4 pb-2 flex flex-wrap gap-1.5">
 			<button
 				class="text-xs font-medium text-primary-dark bg-primary-soft/70 hover:bg-primary-soft px-3 py-1.5 rounded-full transition"
 			>
@@ -98,14 +83,49 @@
 		</div>
 
 		<!-- Message form -->
-     <ChatForm />
+		<ChatForm v-show="props.file" @send-question="getQuestion" />
 	</section>
 </template>
 
 <script setup>
-import ChatForm from './ChatForm.vue';
+import { ref } from "vue";
+import axios from "axios";
+import ChatForm from "./ChatForm.vue";
 
 const props = defineProps({
 	file: Object,
 });
+
+const isLoading = ref(false);
+const messageList = ref([]);
+const userQuestion = ref([]);
+
+function getQuestion(question) {
+	userQuestion.value.push(question);
+	messageList.value.push({
+		content: userQuestion.value.at(-1),
+		role: "user",
+		date: String(new Date().getTime()),
+	});
+
+	messageList.value.push({
+		content: "AI response",
+		role: "AI",
+		date: String(new Date().getTime()),
+	});
+
+	sortMessages();
+	console.log(messageList.value);
+}
+
+async function sendMessage() {
+  const response = await axios.post()
+}
+
+
+function sortMessages() {
+	messageList.value.sort((m1, m2) => {
+		return m1.date.localeCompare(m2.date);
+	});
+}
 </script>

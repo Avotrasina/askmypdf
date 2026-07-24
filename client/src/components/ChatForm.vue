@@ -8,7 +8,7 @@
 			class="flex items-end gap-2 bg-paper border border-border rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-primary/30 focus-within:border-primary/50 transition"
 		>
 			<textarea
-				v-model="userMessage"
+				v-model="userQuestion"
 				rows="1"
 				placeholder="Ask a question about this document…"
 				class="flex-1 resize-none bg-transparent text-sm leading-relaxed placeholder:text-ink-faint focus:outline-none py-1 max-h-28"
@@ -19,8 +19,8 @@
 				:class="[
 					'shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg text-white transition active:scale-95 transition-1',
 					{
-						'bg-primary hover:bg-primary-dark': isUserMessageValid,
-						'bg-primary-soft': !isUserMessageValid,
+						'bg-primary hover:bg-primary-dark': isUserQuestionValid,
+						'bg-primary-soft': !isUserQuestionValid,
 					}
 				]"
 			>
@@ -49,12 +49,16 @@
 <script setup>
 import { computed, ref } from "vue";
 
-const userMessage = ref("");
-const isUserMessageValid = computed(() => {
-	return Boolean(userMessage.value);
+const emits = defineEmits(['send-question']);
+
+const userQuestion = ref("");
+const isUserQuestionValid = computed(() => {
+	return Boolean(userQuestion.value);
 });
 
 function askQuestion() {
-  if (!isUserMessageValid.value) return;
+  if (!isUserQuestionValid.value) return;
+  // Send the question to the ChatPanel
+  emits('send-question', userQuestion.value);
 }
 </script>
