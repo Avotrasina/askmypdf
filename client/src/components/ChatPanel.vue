@@ -100,6 +100,8 @@ const isLoading = ref(false);
 const messageList = ref([]);
 const userQuestion = ref([]);
 
+const VITE_API_URL = import.meta.env.VITE_API_URL;
+
 function getQuestion(question) {
 	userQuestion.value.push(question);
 	messageList.value.push({
@@ -107,25 +109,25 @@ function getQuestion(question) {
 		role: "user",
 		date: String(new Date().getTime()),
 	});
-
-	messageList.value.push({
-		content: "AI response",
-		role: "AI",
-		date: String(new Date().getTime()),
-	});
-
-	sortMessages();
-	console.log(messageList.value);
+	sendMessage();
 }
 
 async function sendMessage() {
-  const response = await axios.post()
-}
-
-
-function sortMessages() {
-	messageList.value.sort((m1, m2) => {
-		return m1.date.localeCompare(m2.date);
-	});
+	isLoading.value = true;
+	const formData = new FormData();
+	formData.append('document', props.file);
+	formData.append('question', userQuestion.value.at(-1));
+	try {
+		const response = await axios.post(`${VITE_API_URL}/upload`, formData);
+		messageList.value.push({
+			content: response.data.output,
+			role: "AI",
+			date: String(new Date().getTime()),
+		})
+	} catch (error) {
+		console.error('Error:', error.message);
+	} finally {
+		isLoading.value = false;
+	}
 }
 </script>
