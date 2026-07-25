@@ -48,23 +48,12 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- Typing indicator -->
-				<div v-if="isLoading" class="flex justify-start">
-					<div
-						class="bg-paper border border-border rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5"
-					>
-						<span
-							class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.2s]"
-						></span>
-						<span
-							class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce [animation-delay:-0.1s]"
-						></span>
-						<span
-							class="w-1.5 h-1.5 rounded-full bg-ink-faint animate-bounce"
-						></span>
-					</div>
-				</div>
+			</div>
+			<div
+				v-if="isLoading && messageList.length"
+				class="flex justify-start fade-up"
+			>
+				<TypingIndicator />
 			</div>
 		</div>
 
@@ -91,7 +80,7 @@
 import { ref } from "vue";
 import axios from "axios";
 import ChatForm from "./ChatForm.vue";
-
+import TypingIndicator from "./TypingIndicator.vue";
 const props = defineProps({
 	file: Object,
 });
@@ -115,17 +104,17 @@ function getQuestion(question) {
 async function sendMessage() {
 	isLoading.value = true;
 	const formData = new FormData();
-	formData.append('document', props.file);
-	formData.append('question', userQuestion.value.at(-1));
+	formData.append("document", props.file);
+	formData.append("question", userQuestion.value.at(-1));
 	try {
 		const response = await axios.post(`${VITE_API_URL}/upload`, formData);
 		messageList.value.push({
 			content: response.data.output,
 			role: "AI",
 			date: String(new Date().getTime()),
-		})
+		});
 	} catch (error) {
-		console.error('Error:', error.message);
+		console.error("Error:", error.message);
 	} finally {
 		isLoading.value = false;
 	}
