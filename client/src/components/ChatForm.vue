@@ -59,6 +59,8 @@ const isUserQuestionValid = computed(() => {
 function askQuestion() {
   if (!isUserQuestionValid.value) return;
   // Send the question to the ChatPanel
-  emits('send-question', userQuestion.value);
+	emits('send-question', userQuestion.value);
+	// Clear input
+	userQuestion.value = "";
 }
 </script>
