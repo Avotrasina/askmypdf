@@ -4,6 +4,7 @@ import { findResponse } from "./lunr.service.js";
 export async function makeSearch(document, question) {
   //  Process pdf parse
   const chunks = await parsePDF(document);
+  console.log(chunks);
   // Get the result
   const results = findResponse(chunks, question);
 
