@@ -3,9 +3,6 @@ import { getHeader } from "pdf-parse/node";
 
 
 export async function parsePDF(pdf) {
-  // Get headers
-  const rs = await getHeader(pdf, true);
-  console.log(rs.headers);
   // Parsing part
   const parser = new PDFParse({url: pdf.path});
   const result = await parser.getText();
