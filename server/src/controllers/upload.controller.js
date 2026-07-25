@@ -18,11 +18,10 @@ export async function handleUpload(req, res, next) {
 
   // Search the response in the document
   const relevantChunkStr = await makeSearch(uploadedFile, question);
-  
-  // Prompt to AI
-  const prompt = `Answer this question : ${question} \n based on this document : ${relevantChunkStr}`;
-  const output = await askAI(prompt);
 
+  // Prompt to AI
+  const prompt = `Answer this question : ${question} \n based on this document : ${relevantChunkStr}. Inform is solution not in the document`;
+  const output = await askAI(prompt);
   return res.json({
     output: output 
   });
